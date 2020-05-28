@@ -2,17 +2,18 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
-import { getSmurfs, addSmurf} from '../actions';
+import { fetchSmurfs, createSmurfs } from '../actions';
+
 const NewSmurf = props => {
 
-  const { register, handleSubmit } = useForm();
-  const onSubmit = data => {
-      console.log(data);
-      props.addSmurf(data);
-      setTimeout(() => { props.getSmurfs(); }, 1000);
-  }
+    const { register, handleSubmit } = useForm();
+    const onSubmit = data => {
+        console.log(data);
+        props.createSmurfs(data);
+        setTimeout(() => { props.fetchSmurfs(); }, 1000);
+    }
 
-  return (
+    return (
       <form onSubmit={handleSubmit(onSubmit)}>
           <label>Name </label>
           <input name='name' ref={register} />
@@ -29,4 +30,4 @@ const mapStateToProps = state => {
   return state
 };
 
-export default connect(mapStateToProps, {getSmurfs, addSmurf})(NewSmurf);
+export default connect(mapStateToProps, {fetchSmurfs, createSmurfs})(NewSmurf);

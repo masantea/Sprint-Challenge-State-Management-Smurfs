@@ -1,32 +1,49 @@
-import axios from "axios";
+import axios from 'axios';
 
-export const FETCHING_SMURFS = "FETCHING_SMURFS";
-export const SMURFS_FETCH_SUCCESS = "SMURFS_FETCH_SUCCESS";
-export const SMURFS_FETCH_FAILURE = "SMURFS_FETCH_FAILURE";
-export const ADDING_SMURF = "ADDING_SMURF";
-export const SMURF_ADD_SUCCESS = "SMURF_ADDED";
-export const SMURF_ADD_FAILURE = "ADD_SMURF_ERROR";
+export const FETCH_SMURFS_START = 'FETCH_SMURFS_START';
+export const FETCH_SMURFS_SUCCESS = 'FETCH_SMURFS_SUCCESS';
+export const FETCH_SMURFS_FAILURE = 'FETCH_SMURFS_FAILURE';
 
-export const getSmurfs = () => dispatch => {
-  dispatch({ type: FETCHING_SMURFS });
-  axios
-    .get('http://localhost:3333/smurfs')
-    .then(res => {
-      dispatch({ type: SMURFS_FETCH_SUCCESS, payload: res.data });
-    })
-    .catch(err => {
-      dispatch({ type: SMURFS_FETCH_FAILURE, payload: err });
-    });
+export const CREATE_SMURFS_START = 'CREATE_SMURFS_START';
+export const CREATE_SMURFS_SUCCESS = 'CREATE_SMURFS_SUCCESS';
+export const CREATE_SMURFS_FAILURE = 'CREATE_SMURFS_FAILURE';
+
+export const fetchSmurfs = () => {
+  return dispatch => {
+      dispatch({ type: FETCH_SMURFS_START});
+      axios
+          .get('http://localhost:3333/smurfs')
+          .then(response => {
+              console.log('API call', response.data);
+              dispatch({ type: FETCH_SMURFS_SUCCESS, payload: response.data})
+          })
+          .catch(error => {
+              console.log('Error', error);
+              dispatch({ type: FETCH_SMURFS_FAILURE, payload: error})
+          });
+  };
 };
 
-export const addSmurf = ({ name, age, height }) => dispatch => {
-  dispatch({ type: ADDING_SMURF });
-  axios
-    .post('http://localhost:3333/smurfs', { name, age, height })
-    .then(res => {
-      dispatch({ type: SMURF_ADD_SUCCESS, payload: res.data });
-    })
-    .catch(err => {
-      dispatch({ type: SMURF_ADD_FAILURE, payload: err });
-    });
+export const createSmurfs = data => {
+    
+  return dispatch => {
+      dispatch({ type: CREATE_SMURFS_START });
+      axios
+          .post('http://localhost:3333/smurfs', 
+          {
+              name: data.name,
+              age: Number(data.age),
+              height: data.height
+          }
+          )
+      .then(response => {
+          console.log('Post Response', response);
+          dispatch({ type: CREATE_SMURFS_SUCCESS });
+      })
+      .catch(error => {
+          console.log(error);
+          dispatch({ type: CREATE_SMURFS_FAILURE, payload: error });
+      });
+          
+  };
 };
